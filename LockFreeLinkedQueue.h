@@ -41,7 +41,7 @@ public:
 private:
     struct Node {
         std::atomic<T> val;
-        std::atomic<Node*>next = NULL;
+        std::atomic<Node*>next;
         Node(T val) :val(val) {
 
         }

@@ -3,4 +3,5 @@ project(clhQueue)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(clhQueue main.cpp)
+add_executable(clhQueue LockFreeLinkedQueue.cpp)
+target_link_libraries(clhQueue pthread)

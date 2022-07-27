@@ -1,4 +1,4 @@
-#include"main.h"
+#include"LockFreeLinkedQueue.h"
 #include<vector>
 #include<unordered_map>
 #include<mutex>
@@ -6,12 +6,13 @@
 #include<thread>
 #include<iostream>
 #include <ctime>
+#include <atomic>
 using namespace std;
 
 std::mutex mx;
 condition_variable cond;
 bool running = false;
-atomic<int> cnt = 0;
+atomic<int> cnt(0);
 
 //队列
 LockFreeLinkedQueue<int> queue;
