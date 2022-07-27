@@ -1,0 +1,5 @@
+stepByStep
+*.o
+spr
+.idea/
+cmake-build-debug/
