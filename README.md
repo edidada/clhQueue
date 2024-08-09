@@ -5,6 +5,7 @@ https://codeantenna.com/a/0ffPhvoZQG
 
 https://stackoverflow.com/questions/27314485/use-of-deleted-function-error-with-stdatomic-int
 
+跑起来了，结果如下：
 ```shell
 96 10000
 95 10000
