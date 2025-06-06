@@ -21,10 +21,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup CMake
-        uses: cmake-actions/setup-cmake@v1
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v2
         with:
-          version: '3.25.x'
+          cmake-version: '3.16.x'
+      - name: Use cmake
+        run: cmake --version
 
       - name: Install lcov (Linux only)
         if: matrix.os == 'ubuntu-latest'
