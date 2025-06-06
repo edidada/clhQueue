@@ -1,4 +1,5 @@
-#include"LockFreeLinkedQueue.h"
+#include "LockFreeLinkedQueue.h"
+
 #include<vector>
 #include<unordered_map>
 #include<mutex>
@@ -7,6 +8,7 @@
 #include<iostream>
 #include <ctime>
 #include <atomic>
+
 using namespace std;
 
 std::mutex mx;
