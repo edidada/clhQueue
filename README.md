@@ -112,3 +112,16 @@ consume time: 10 seconds
 total numbers: 1000000
 failed: 0
 ```
+
+## win
+
+```shell
+D:\develops\git\github\cpp\clhQueue\cmake-build-debug\clhQueue.exe
+Process finished with exit code -1073741819 (0xC0000005)
+```
+
+如果是自己写的 Lock-Free 队列，请参考标准实现（如 boost 或 Facebook 的 folly）
+
+
+Exception 0xc0000005 encountered at address 0x7ff6bd7acd6a: Access violation reading location 0xffffffffffffffff
+这个错误表示程序在尝试 读取一个无效内存地址 0xFFFFFFFFFFFFFFFF（即 -1 的 64 位整数），这是典型的 野指针或空指针访问问题。
