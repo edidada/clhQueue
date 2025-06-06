@@ -7,6 +7,7 @@ on:
     branches: [ "master" ]
 
 env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Debug
 
 jobs:
@@ -23,10 +24,61 @@ jobs:
       - name: Setup CMake
         uses: kitabisa/cmake-github-action@v1
         with:
-          version: '3.25.x'  # 可按需调整版本
+          version: '3.25.x'
 
-      - name: Configure CMake
+      - name: Install lcov (Linux only)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y lcov
+
+      - name: Configure with Coverage (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_C_FLAGS="--coverage"
+
+      - name: Configure for other platforms
+        if: matrix.os != 'ubuntu-latest'
         run: cmake -B build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
       - name: Build project
         run: cmake --build build --config ${{ env.BUILD_TYPE }}
+
+      - name: Run tests
+        working-directory: build
+        run: ctest -C ${{ env.BUILD_TYPE }} --output-on-failure
+
+      - name: Generate coverage report (Linux only)
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: build
+        run: |
+          lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' --output-file coverage.filtered
+          lcov --list coverage.filtered
+
+      - name: Install clang-tidy and cppcheck
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-tidy cppcheck
+
+      - name: Run clang-tidy
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cd build && clang-tidy ../src/*.cpp -- -std=c++17
+
+      - name: Run cppcheck
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cppcheck --enable=all --inconclusive --std=c++17 ./src/ --quiet
+
+      - name: Archive binaries
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          mkdir -p artifacts
+          cp build/clhQueue artifacts/
+
+      - name: Upload Artifact
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: clhQueue-${{ matrix.os }}
+          path: artifacts/
