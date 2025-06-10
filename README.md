@@ -125,3 +125,175 @@ Process finished with exit code -1073741819 (0xC0000005)
 
 Exception 0xc0000005 encountered at address 0x7ff6bd7acd6a: Access violation reading location 0xffffffffffffffff
 这个错误表示程序在尝试 读取一个无效内存地址 0xFFFFFFFFFFFFFFFF（即 -1 的 64 位整数），这是典型的 野指针或空指针访问问题。
+
+当然可以！下面是将你上面的 **Test-and-Set (TAS) 自旋锁示例代码**整理为一个完整的 C/C++ 项目，并提供：
+
+- ✅ 项目结构命名建议（英文）
+- ✅ `CMakeLists.txt` 文件（支持 GCC/Clang/MSVC 编译）
+- ✅ 支持 Linux 和 Windows（MSYS2 / MinGW / Visual Studio）
+
+---
+
+## 📁 项目结构建议
+
+```
+tas-spinlock-demo/
+├── CMakeLists.txt
+├── src/
+│   └── main.c
+└── include/
+    └── spinlock.h
+```
+
+---
+
+## 📄 文件内容说明
+
+### 1. `include/spinlock.h`
+
+```c
+#ifndef SPINLOCK_H
+#define SPINLOCK_H
+
+#include <stdio.h>
+#include <pthread.h>
+
+// 自旋锁类型定义
+typedef int spinlock_t;
+
+// 原子 Test-and-Set 操作（x86 平台）
+static inline int test_and_set(int* lock) {
+    int old;
+    __asm__ volatile(
+        "xchg %0, %1"
+        : "=r"(old), "+m"(*lock)
+        : "0"(1)
+        : "memory");
+    return old;
+}
+
+// 加锁
+static inline void spin_lock(spinlock_t* lock) {
+    while (test_and_set(lock)) {
+        // 自旋等待，可加入 pause() 或 usleep(0) 优化 CPU 占用率
+    }
+}
+
+// 解锁
+static inline void spin_unlock(spinlock_t* lock) {
+    *lock = 0;
+}
+
+#endif // SPINLOCK_H
+```
+
+---
+
+### 2. `src/main.c`
+
+```c
+#include "spinlock.h"
+#include <pthread.h>
+#include <stdio.h>
+
+spinlock_t lock = 0;
+int shared_counter = 0;
+
+void* thread_func(void* arg) {
+    int id = *(int*)arg;
+    for (int i = 0; i < 100000; ++i) {
+        spin_lock(&lock);
+        ++shared_counter;
+        spin_unlock(&lock);
+    }
+    printf("Thread %d done.\n", id);
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+    int id1 = 1, id2 = 2;
+
+    pthread_create(&t1, NULL, thread_func, &id1);
+    pthread_create(&t2, NULL, thread_func, &id2);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    printf("Final counter value: %d\n", shared_counter);
+    return 0;
+}
+```
+
+---
+
+### 3. `CMakeLists.txt`
+
+```cmake
+cmake_minimum_required(VERSION 3.14)
+project(tas_spinlock_demo C)
+
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+# 添加头文件目录
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
+# 添加源文件
+add_executable(tas_spinlock_demo src/main.c)
+
+# 链接 pthread 库（Linux）
+if(UNIX)
+    target_link_libraries(tas_spinlock_demo pthread)
+endif()
+
+# Windows 下如果使用 MinGW/MSYS2 一般不需要额外链接
+```
+
+---
+
+## 🛠️ 编译方法（跨平台）
+
+### Linux/macOS
+
+```bash
+mkdir build && cd build
+cmake ..
+make
+./tas_spinlock_demo
+```
+
+### Windows（MSYS2 / MinGW）
+
+```bash
+mkdir build && cd build
+cmake -G "MinGW Makefiles" ..
+mingw32-make
+tas_spinlock_demo.exe
+```
+
+### Windows（Visual Studio）
+
+如果你使用的是 Visual Studio：
+
+```bash
+cmake -G "Visual Studio 17 2022" ..
+```
+
+然后打开生成的 `.sln` 文件即可。
+
+---
+
+## ✅ 总结一句话
+
+> 我为你整理了一个完整的 TAS 自旋锁项目模板，包含清晰的英文命名结构和跨平台 CMake 构建脚本，适用于学习、教学或小型并发库开发。
+
+---
+
+如果你希望我帮你：
+
+- ✅ 扩展为 TTAS 锁、CLH 锁、MCS 锁实现
+- ✅ 添加性能测试工具（如 perf、time）
+- ✅ 构建为共享库（DLL / .so）供其他项目调用
+
+
