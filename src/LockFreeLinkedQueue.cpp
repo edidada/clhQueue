@@ -1,4 +1,4 @@
-#include "LockFreeLinkedQueue.h"
+#include "LockFreeLinkedQueue2.h"
 
 #include<vector>
 #include<unordered_map>
