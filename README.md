@@ -240,12 +240,12 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # 添加源文件
-add_executable(tas_spinlock_demo src/main.c)
+add_executable(tas_spinlock_demo src/tas_spinlock_demo.c)
 
 # 链接 pthread 库（Linux）
-if(UNIX)
+if (UNIX)
     target_link_libraries(tas_spinlock_demo pthread)
-endif()
+endif ()
 
 # Windows 下如果使用 MinGW/MSYS2 一般不需要额外链接
 ```
@@ -425,12 +425,12 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # 添加可执行文件
-add_executable(ttas_spinlock_demo src/main.c)
+add_executable(ttas_spinlock_demo src/tas_spinlock_demo.c)
 
 # 链接 pthread 库（Linux/macOS）
-if(UNIX)
+if (UNIX)
     target_link_libraries(ttas_spinlock_demo pthread)
-endif()
+endif ()
 
 # Windows 下使用 MinGW/MSYS2 一般不需要额外链接
 ```
@@ -613,12 +613,12 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # 添加可执行文件
-add_executable(peterson_lock_demo src/main.c)
+add_executable(peterson_lock_demo src/tas_spinlock_demo.c)
 
 # 链接 pthread 库（Linux/macOS）
-if(UNIX)
+if (UNIX)
     target_link_libraries(peterson_lock_demo pthread)
-endif()
+endif ()
 
 # Windows 下使用 MinGW/MSYS2 一般不需要额外链接
 ```
@@ -849,12 +849,12 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # 添加可执行文件
-add_executable(mcs_lock_demo src/main.c)
+add_executable(mcs_lock_demo src/tas_spinlock_demo.c)
 
 # 链接 pthread 库（Linux/macOS）
-if(UNIX)
+if (UNIX)
     target_link_libraries(mcs_lock_demo pthread)
-endif()
+endif ()
 
 # Windows 下使用 MinGW/MSYS2 一般不需要额外链接
 ```

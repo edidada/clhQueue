@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_executable(clhQueue src/LockFreeLinkedQueue.cpp)
 # 添加源文件
-add_executable(tas_spinlock_demo src/main.c)
+add_executable(tas_spinlock_demo src/tas_spinlock_demo.c)
 add_executable(ttas_spinlock src/ttas_spinlock.c)
 add_executable(peterson_lock src/peterson_lock.c)
 add_executable(bakery_lock src/bakery_lock.c)
