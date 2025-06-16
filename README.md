@@ -919,3 +919,14 @@ malloc(): unaligned fastbin chunk detected
 Process finished with exit code 134
 LockFreeLinkedQueue2.h
 为什么可以运行成功？
+
+
+typedef enum memory_order
+{
+memory_order_relaxed,
+memory_order_consume,
+memory_order_acquire,
+memory_order_release,
+memory_order_acq_rel,
+memory_order_seq_cst
+} memory_order;
