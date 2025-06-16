@@ -913,5 +913,9 @@ cmake -G "Visual Studio 17 2022" ..
 - ✅ 对比不同锁的性能（加 perf 工具分析）
 - ✅ 扩展为支持递归锁、读写锁
 
+/mnt/d/develops/git/github/cpp/clhQueue/cmake-build-debug-wsl/clhQueue
+malloc(): unaligned fastbin chunk detected
+
+Process finished with exit code 134
 LockFreeLinkedQueue2.h
 为什么可以运行成功？

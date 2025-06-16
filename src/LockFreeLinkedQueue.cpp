@@ -19,7 +19,7 @@ atomic<int> cnt(0);
 //队列
 LockFreeLinkedQueue<int> queue;
 
-const int pn = 100, cn = 100;  //生产者/消费者线程数
+const int pn = 200, cn = 200;  //生产者/消费者线程数
 //每个生产者push batch*num的数据
 const int batch = 100;
 const int num = 100;
