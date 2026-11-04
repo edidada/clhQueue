@@ -31,7 +31,7 @@ jobs:
 
       - name: Configure with Coverage (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_C_FLAGS="--coverage"
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage -fprofile-update=atomic" -DCMAKE_C_FLAGS="--coverage -fprofile-update=atomic"
 
       - name: Configure for other platforms
         if: matrix.os != 'ubuntu-latest'
