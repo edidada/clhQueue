@@ -17,7 +17,7 @@ bool running = false;
 atomic<int> cnt(0);
 
 //队列
-LockFreeLinkedQueue<int> queue;
+LockFreeLinkedQueue<int> lfQueue;
 
 const int pn = 200, cn = 200;  //生产者/消费者线程数
 //每个生产者push batch*num的数据
@@ -33,7 +33,7 @@ void produce() {
     }
     for (int i = 0; i < batch; ++i) {
         for (int j = 1; j <= num; ++j)
-            queue.push(j);
+            lfQueue.push(j);
     }
     ++cnt;
 }
@@ -47,7 +47,7 @@ void consume(int i) {
     }
     int val;
     while (true) {
-        bool flag = queue.tryPop(val);
+        bool flag = lfQueue.tryPop(val);
         if (flag) ++count[val];
         else if (cnt == pn) break;
     }
@@ -84,7 +84,7 @@ int main() {
         cout << kv.first << " " << kv.second << endl;
         failed = !(kv.first > 0 && kv.first <= num && kv.second == batch * pn);
     }
-    cout << "is_lock_free: " << (queue.is_lock_free() ? "true" : "false") << endl;
+    cout << "is_lock_free: " << (lfQueue.is_lock_free() ? "true" : "false") << endl;
     cout << "consume time: " << end - start << " seconds" << endl;
     cout << "total numbers: " << total << endl;
     cout << "failed: " << failed << endl;
