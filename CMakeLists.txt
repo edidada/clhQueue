@@ -19,3 +19,12 @@ if(UNIX)
     target_link_libraries(bakery_lock pthread)
     target_link_libraries(mcs_lock pthread)
 endif()
+
+# 注册测试：ctest 会实际运行这些程序，验证它们能正常执行
+enable_testing()
+add_test(NAME clhQueue COMMAND clhQueue)
+add_test(NAME tas_spinlock_demo COMMAND tas_spinlock_demo)
+add_test(NAME ttas_spinlock COMMAND ttas_spinlock)
+add_test(NAME peterson_lock COMMAND peterson_lock)
+add_test(NAME bakery_lock COMMAND bakery_lock)
+add_test(NAME mcs_lock COMMAND mcs_lock)

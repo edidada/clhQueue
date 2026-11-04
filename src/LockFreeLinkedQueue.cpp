@@ -82,10 +82,11 @@ int main() {
     for (auto& kv : res) {
         total += kv.second;
         cout << kv.first << " " << kv.second << endl;
-        failed = !(kv.first > 0 && kv.first <= num && kv.second == batch * pn);
+        failed |= !(kv.first > 0 && kv.first <= num && kv.second == batch * pn);
     }
     cout << "is_lock_free: " << (lfQueue.is_lock_free() ? "true" : "false") << endl;
     cout << "consume time: " << end - start << " seconds" << endl;
     cout << "total numbers: " << total << endl;
     cout << "failed: " << failed << endl;
+    return failed;
 }
