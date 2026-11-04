@@ -18,12 +18,14 @@ public:
         islockfree = node->val.is_lock_free();
     }
     ~LockFreeLinkedQueue() {
-        T tmp = Empty;
-        // 释放所有节点
-        while (tryPop(tmp));
+        // 并发环境下节点不能在 pop 时立即释放（会导致 use-after-free），
+        // 这里在析构（单线程）时统一释放整条链表。
         Node* node = head.load(std::memory_order_relaxed);
-        if (node != nullptr)
+        while (node != nullptr) {
+            Node* next = node->next.load(std::memory_order_relaxed);
             delete node;
+            node = next;
+        }
     }
     bool is_lock_free() {
         return islockfree;
@@ -107,7 +109,8 @@ bool LockFreeLinkedQueue<T>::tryPop(T& val) {
                 if (head.compare_exchange_weak(first, next,
                     std::memory_order_release, std::memory_order_relaxed)) {
                     count.fetch_sub(1, std::memory_order_relaxed);
-                    delete first;
+                    // 注意：此处不立即 delete first，避免与其他仍持有该指针的
+                    // 线程产生 use-after-free；节点在析构时统一释放。
                     return true;
                 }
             }
