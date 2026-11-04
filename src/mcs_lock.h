@@ -10,7 +10,7 @@ typedef struct mcs_node {
 } mcs_node_t;
 
 typedef struct {
-    mcs_node_t* volatile tail;
+    _Atomic mcs_node_t* tail;
 } mcs_lock_t;
 
 // 初始化锁
