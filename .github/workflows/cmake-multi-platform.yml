@@ -7,6 +7,12 @@ on:
   pull_request:
     branches: [ "master" ]
 
+# 同一分支只保留最新一次运行，自动取消旧的排队/进行中 run，
+# 避免多个 run 同时抢占 macOS runner 造成排队堆积。
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Debug
@@ -16,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-13]
+        os: [ubuntu-latest, windows-latest, macos-15-intel]
 
     steps:
       - name: Checkout repository
